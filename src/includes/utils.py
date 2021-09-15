@@ -1,4 +1,5 @@
 from flask import jsonify
+from cerberus import Validator
 
 
 class Response:
@@ -19,3 +20,19 @@ class Response:
         resp.status_code = self.status_code
         resp.headers.add('Content-Type', 'application/json')
         return resp
+
+
+def data_validator(schema: dict, data: dict) -> [bool, dict]:
+    """
+    Function takes a schema for the expected data structure. Then validates
+    the data. It purges all data not in the schema and returns a bool
+    denoting if the validation has passed
+    :param {dict} schema: schema of the expected data structure
+    :param {dict} data: the data to be validated
+    :return: {dict} the validated and purged data
+    """
+    v = Validator(schema, purge_unknown=True)
+    if v.validate(data):
+        return True, v.normalized(data)
+    return False, v.errors
+

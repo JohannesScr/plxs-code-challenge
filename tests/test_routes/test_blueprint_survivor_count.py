@@ -1,3 +1,8 @@
+from logging import getLogger
+
+log = getLogger(__name__)
+
+
 class TestBlueprintSurvivorCount:
     """
     Test the survivor count blueprint
@@ -10,8 +15,9 @@ class TestBlueprintSurvivorCount:
         THEN return a 400 response
         """
         with api:
+            payload = {}
             res = api.post('/survivorCount',
-                           json={},
+                           json=payload,
                            headers={'Content-Type': 'application/json'})
             assert res.status_code == 400
             assert res.json['message'] == 'BadRequest'
@@ -23,9 +29,27 @@ class TestBlueprintSurvivorCount:
         THEN return a 404 response
         """
         with api:
+            payload = {
+                'data': [
+                    {
+                        'PassengerId': 1,
+                        'Survived': 1,
+                        'Pclass': 12,
+                        'Name': 'james',
+                        'Sex': 'male',
+                        'Age': 23,
+                        'SibSp': 1,
+                        'Parch': 0,
+                        'Ticket': 'A/521171'
+                    }
+                ],
+                'binField': 'Name',
+                'binBoundaries': [5, 10]
+            }
             res = api.post('/survivorCount',
-                           json={},
+                           json=payload,
                            headers={'Content-Type': 'application/json'})
+            log.info(res.json)
             assert res.status_code == 404
             assert res.json['message'] == 'NotFound'
 

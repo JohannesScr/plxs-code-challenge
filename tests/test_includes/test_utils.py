@@ -1,4 +1,4 @@
-from src.includes.utils import Response
+from src.includes.utils import Response, data_validator
 
 
 class TestResponse:
@@ -32,3 +32,46 @@ class TestResponse:
         assert res.json['message'] == 'Unauthorised'
         assert res.json['data'] == {'survivors': 0}
         assert res.json['errors'] == {}
+
+
+class TestDataValidator:
+    """Test the data validator function"""
+
+    def test_purging_data(self):
+        """
+        GIVEN a schema and data
+        WHEN there is data fields that are not in the schema
+        THEN validated the data and purge all fields not in the schema
+        """
+        data = {
+            'first_name': 'james',
+            'last_name': 'bond'
+        }
+        schema = {
+            'first_name': {
+                'type': 'string'
+            }
+        }
+        validated, data = data_validator(schema=schema, data=data)
+        assert validated
+        assert data == {'first_name': 'james'}
+
+    def test_basic_validation(self):
+        """
+        GIVEN a schema and data
+        WHEN the data has errors
+        THEN return false and a dict of errors
+        """
+        data = {
+            'last_name': 'bond'
+        }
+        schema = {
+            'first_name': {
+                'type': 'string',
+                'required': True
+            }
+        }
+        validated, data = data_validator(schema=schema, data=data)
+        assert validated is False
+        assert data == {'first_name': ['required field']}
+

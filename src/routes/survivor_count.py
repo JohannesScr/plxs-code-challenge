@@ -1,5 +1,5 @@
-from flask import Blueprint
-from src.includes.utils import Response
+from flask import Blueprint, request, abort
+from src.includes.utils import Response, data_validator
 
 survivor_count_ = Blueprint('survivor_count', __name__)
 
@@ -11,5 +11,75 @@ def post_survivor_count():
     bins. That is creating a histogram based on a field with specified
     number of bins.
     """
+    schema = {
+        'data': {
+            'type': 'list',
+            'schema': {
+                'type': 'dict',
+                'schema': {
+                    'PassengerId': {
+                        'type': 'integer',
+                        'required': True
+                    },
+                    'Survived': {
+                        'type': 'integer',
+                        'required': True
+                    },
+                    'Pclass': {
+                        'type': 'integer',
+                        'required': True
+                    },
+                    'Name': {
+                        'type': 'string',
+                        'required': True
+                    },
+                    'Sex': {
+                        'type': 'string',
+                        'required': True
+                    },
+                    'Age': {
+                        'type': 'integer',
+                        'required': True
+                    },
+                    'SibSp': {
+                        'type': 'integer',
+                        'required': True
+                    },
+                    'Parch': {
+                        'type': 'integer',
+                        'required': True
+                    },
+                    'Ticket': {
+                        'type': 'string',
+                        'required': True
+                    }
+                }
+            },
+            'minlength': 1,
+            'required': True
+        },
+        'binBoundaries': {
+            'type': 'list',
+            'schema': {'type': 'integer'},
+            'required': True
+        },
+        'binField': {
+            'type': 'string',
+            'required': True
+        }
+    }
+    validated, data = data_validator(schema=schema, data=request.json)
+    if validated is False:
+        abort(400, data)
+
+    if not isinstance(data['data'][0][data['binField']], int):
+        abort(404, {
+            data['binField']: [
+                'each of the data {} must be of type '
+                'integer'.format(data['binField'])
+            ]
+        })
+
+    # counted = countSurvivors()
     return Response(message='survivors counted successfully',
                     data={}).create()
