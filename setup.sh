@@ -15,7 +15,7 @@ fi
 echo "################################"
 echo "## Install Dependencies       ##"
 echo "################################"
-if [ -f "./requirements.txt"]; then
+if [ -f "./requirements.txt" ]; then
   $RESOURCE_PATH/venv/bin/pip install -r requirements.txt
 else
   echo "no requirements.txt file can be found"
