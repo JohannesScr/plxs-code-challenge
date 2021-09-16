@@ -25,9 +25,7 @@ def create_server(env='.env'):
     app.register_error_handler(404, error_handler_404)
 
     # register blueprints
-    from src.routes.home import home_
     from src.routes.survivor_count import survivor_count_
-    app.register_blueprint(home_)
     app.register_blueprint(survivor_count_)
 
     return app

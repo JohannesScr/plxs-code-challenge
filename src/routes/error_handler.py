@@ -4,6 +4,7 @@ from src.includes.utils import Response
 def error_handler_400(errors):
     """
     Function to return a generic 400 response
+
     :param {dict} errors: each key is an error point with a
         list of error descriptions
     :return: response
@@ -16,6 +17,7 @@ def error_handler_400(errors):
 def error_handler_404(errors):
     """
     Function to return a generic 404 response
+
     :param {dict} errors: each key is an error point with a
         list of error descriptions
     :return: response

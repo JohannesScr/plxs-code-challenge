@@ -14,9 +14,7 @@ class TestResponse:
         res = Response().create()
         assert res.status_code == 200
         assert res.headers.get('Content-Type') == 'application/json'
-        assert res.json['message'] == 'successful'
-        assert res.json['data'] == {}
-        assert res.json['errors'] == {}
+        assert res.json == {}
 
     def test_valid_data(self):
         """

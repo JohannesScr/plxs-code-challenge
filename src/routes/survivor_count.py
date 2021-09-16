@@ -1,5 +1,6 @@
 from flask import Blueprint, request, abort
 from src.includes.utils import Response, data_validator
+from src.includes.survivors_count import survivors_count
 
 survivor_count_ = Blueprint('survivor_count', __name__)
 
@@ -11,6 +12,10 @@ def post_survivor_count():
     bins. That is creating a histogram based on a field with specified
     number of bins.
     """
+    if not request.is_json:
+        abort(400, {
+            'content-type': ['incorrect body type', 'request body type json']
+        })
     schema = {
         'data': {
             'type': 'list',
@@ -80,6 +85,8 @@ def post_survivor_count():
             ]
         })
 
-    # counted = countSurvivors()
+    counts = survivors_count(data=data['data'],
+                             bin_field=data['binField'],
+                             bin_boundaries=data['binBoundaries'])
     return Response(message='survivors counted successfully',
-                    data={}).create()
+                    data={'counts': counts}).create()
