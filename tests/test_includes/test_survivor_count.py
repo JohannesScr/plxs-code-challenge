@@ -115,7 +115,7 @@ class TestSurvivorCount:
         THEN return a [1, 0]
         """
         data = [
-            {'uno': 'uno', 'numberOfKids': 12, 'tres': 100},
+            {'uno': 'uno', 'numberOfKids': 12, 'tres': 100, 'Survived': 1},
         ]
         bin_field = 'numberOfKids'
         bin_boundaries = [20]
@@ -131,7 +131,7 @@ class TestSurvivorCount:
         THEN return a [0, 1]
         """
         data = [
-            {'uno': 'uno', 'numberOfKids': 21, 'tres': 100},
+            {'uno': 'uno', 'numberOfKids': 21, 'tres': 100, 'Survived': 1},
         ]
         bin_field = 'numberOfKids'
         bin_boundaries = [20]
@@ -147,9 +147,12 @@ class TestSurvivorCount:
         THEN return the expected counts
         """
         data = [
-            {'uno': 'uno', 'age': 12, 'tres': 100},
-            {'uno': 'uno', 'age': 25, 'tres': 100},
-            {'uno': 'uno', 'age': 30, 'tres': 5},
+            {'uno': 'uno', 'age': 12, 'tres': 100, 'Survived': 1},
+            {'uno': 'uno', 'age': 12, 'tres': 100, 'Survived': 0},
+            {'uno': 'uno', 'age': 25, 'tres': 100, 'Survived': 1},
+            {'uno': 'uno', 'age': 25, 'tres': 100, 'Survived': 0},
+            {'uno': 'uno', 'age': 30, 'tres': 5, 'Survived': 1},
+            {'uno': 'uno', 'age': 30, 'tres': 5, 'Survived': 0},
         ]
         bin_field = 'age'
         bin_boundaries = [20]
@@ -165,7 +168,7 @@ class TestSurvivorCount:
         THEN return the expected counts
         """
         data = [
-            {'uno': 'uno', 'age': 12, 'tres': 100},
+            {'uno': 'uno', 'age': 12, 'tres': 100, 'Survived': 1},
         ]
         bin_field = 'age'
         bin_boundaries = [20, 40, 50]
@@ -175,7 +178,7 @@ class TestSurvivorCount:
         assert counts == [1, 0, 0, 0]
 
         data = [
-            {'uno': 'uno', 'age': 23, 'tres': 45},
+            {'uno': 'uno', 'age': 23, 'tres': 45, 'Survived': 1},
         ]
         counts = survivors_count(data=data,
                                  bin_field=bin_field,
@@ -183,7 +186,7 @@ class TestSurvivorCount:
         assert counts == [0, 1, 0, 0]
 
         data = [
-            {'uno': 'uno', 'age': 41, 'tres': 100},
+            {'uno': 'uno', 'age': 41, 'tres': 100, 'Survived': 1},
         ]
         counts = survivors_count(data=data,
                                  bin_field=bin_field,
@@ -191,12 +194,52 @@ class TestSurvivorCount:
         assert counts == [0, 0, 1, 0]
 
         data = [
-            {'uno': 'uno', 'age': 1020, 'tres': 10},
+            {'uno': 'uno', 'age': 1020, 'tres': 10, 'Survived': 1},
         ]
         counts = survivors_count(data=data,
                                  bin_field=bin_field,
                                  bin_boundaries=bin_boundaries)
         assert counts == [0, 0, 0, 1]
+
+    def test_single_entry_multiple_bins_did_not_survive(self):
+        """
+        GIVEN a dataset with a single entry and multiple bins
+        WHEN the function is called
+        THEN return the expected counts
+        """
+        data = [
+            {'uno': 'uno', 'age': 12, 'tres': 100, 'Survived': 0},
+        ]
+        bin_field = 'age'
+        bin_boundaries = [20, 40, 50]
+        counts = survivors_count(data=data,
+                                 bin_field=bin_field,
+                                 bin_boundaries=bin_boundaries)
+        assert counts == [0, 0, 0, 0]
+
+        data = [
+            {'uno': 'uno', 'age': 23, 'tres': 45, 'Survived': 0},
+        ]
+        counts = survivors_count(data=data,
+                                 bin_field=bin_field,
+                                 bin_boundaries=bin_boundaries)
+        assert counts == [0, 0, 0, 0]
+
+        data = [
+            {'uno': 'uno', 'age': 41, 'tres': 100, 'Survived': 0},
+        ]
+        counts = survivors_count(data=data,
+                                 bin_field=bin_field,
+                                 bin_boundaries=bin_boundaries)
+        assert counts == [0, 0, 0, 0]
+
+        data = [
+            {'uno': 'uno', 'age': 1020, 'tres': 10, 'Survived': 0},
+        ]
+        counts = survivors_count(data=data,
+                                 bin_field=bin_field,
+                                 bin_boundaries=bin_boundaries)
+        assert counts == [0, 0, 0, 0]
 
     def test_multiple_entries_multiple_bins_lower(self):
         """
@@ -205,18 +248,18 @@ class TestSurvivorCount:
         THEN return the expected counts
         """
         data = [
-            {'uno': 'uno', 'age': 12, 'tres': 100},
-            {'uno': 'uno', 'age': 19, 'tres': 100},
-            {'uno': 'uno', 'age': 43, 'tres': 100},
-            {'uno': 'uno', 'age': 41, 'tres': 100},
-            {'uno': 'uno', 'age': 45, 'tres': 100},
-            {'uno': 'uno', 'age': 50, 'tres': 100},
-            {'uno': 'uno', 'age': 55, 'tres': 100},
+            {'uno': 'uno', 'age': 12, 'tres': 100, 'Survived': 1},
+            {'uno': 'uno', 'age': 19, 'tres': 100, 'Survived': 1},
+            {'uno': 'uno', 'age': 43, 'tres': 100, 'Survived': 1},
+            {'uno': 'uno', 'age': 41, 'tres': 100, 'Survived': 1},
+            {'uno': 'uno', 'age': 45, 'tres': 100, 'Survived': 0},
+            {'uno': 'uno', 'age': 50, 'tres': 100, 'Survived': 1},
+            {'uno': 'uno', 'age': 55, 'tres': 100, 'Survived': 1},
         ]
         bin_field = 'age'
         bin_boundaries = [20, 40, 50]
         counts = survivors_count(data=data,
                                  bin_field=bin_field,
                                  bin_boundaries=bin_boundaries)
-        assert counts == [2, 0, 4, 1]
+        assert counts == [2, 0, 3, 1]
 

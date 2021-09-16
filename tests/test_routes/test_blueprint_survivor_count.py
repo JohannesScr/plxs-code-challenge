@@ -115,6 +115,37 @@ class TestBlueprintSurvivorCount:
             assert isinstance(res.json['counts'], list)
             assert res.json['counts'] == [0, 0, 1]
 
+    def test_only_count_survived(self, api):
+        """
+        GIVEN the endpoint is called
+        WHEN the data payload is of the correct format, only if Survived is
+            1 should it be counted
+        THEN return 200 with the survivor count
+        """
+        with api:
+            payload = {
+                'data': [
+                    {
+                        'PassengerId': 1,
+                        'Survived': 0,
+                        'Pclass': 12,
+                        'Name': 'james',
+                        'Sex': 'male',
+                        'Age': 23,
+                        'SibSp': 1,
+                        'Parch': 0,
+                        'Ticket': 'A/521171'
+                    }
+                ],
+                'binField': 'Age',
+                'binBoundaries': [5, 10]
+            }
+            res = api.post('/survivorCount',
+                           json=payload)
+            assert res.status_code == 200
+            assert isinstance(res.json['counts'], list)
+            assert res.json['counts'] == [0, 0, 0]
+
     def test_bin_allocation(self, api):
         """
         GIVEN the correct payload is sent
@@ -151,7 +182,7 @@ class TestBlueprintSurvivorCount:
                     },
                     {
                         'PassengerId': 1,
-                        'Survived': 1,
+                        'Survived': 0,
                         'Pclass': 12,
                         'Name': 'james',
                         'Sex': 'male',
@@ -168,4 +199,4 @@ class TestBlueprintSurvivorCount:
                            json=payload)
             assert res.status_code == 200
             assert isinstance(res.json['counts'], list)
-            assert res.json['counts'] == [1, 2, 0]
+            assert res.json['counts'] == [1, 1, 0]

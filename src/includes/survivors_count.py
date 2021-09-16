@@ -52,5 +52,5 @@ def survivors_count(data: list, bin_field: str, bin_boundaries: list):
     bins = [0 for _ in range(len(bin_boundaries) + 1)]
     for item in data:
         index = find_bin(value=item[bin_field], bins=bin_boundaries)
-        bins[index] += 1
+        bins[index] += item['Survived']
     return bins
