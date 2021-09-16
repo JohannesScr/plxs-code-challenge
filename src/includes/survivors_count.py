@@ -27,11 +27,9 @@ def find_bin(value: int, bins: list) -> int:
                 return i
 
     # single bin condition
-    for i, upper_bound in enumerate(bins):
-        if i == 0 and len(bins) == 1:
-            if value <= upper_bound:
-                return i
-            return i + 1
+    if value <= bins[0]:
+        return 0
+    return 1
 
 
 def survivors_count(data: list, bin_field: str, bin_boundaries: list):
